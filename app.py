@@ -20,8 +20,10 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )                                   
 
-MatchOverViewDataPath =r"C:\Users\ASUS\OneDrive\Desktop\Python Projects\IPL data analysis\Updated_Matches.csv"
-BallAnalysisDataPath = r"C:\Users\ASUS\OneDrive\Desktop\Python Projects\IPL data analysis\Updated_Ipl_Ball_By_Ball3.csv"
+MatchOverViewDataPath =r"Updated_Matches.csv"
+BallAnalysisDataPath = r"Updated_Ipl_Ball_By_Ball3.csv"
+
+#Creates the two datasets from the csv files 
 
 MatchOverviewdF , BallAnalysisdf = dataLoaderandPreprocessor()
 
@@ -37,7 +39,6 @@ user_menu = st.sidebar.radio(
 
 
     
-
 
 if user_menu == 'MatchWiseAnalysis':
     season = st.sidebar.selectbox(

@@ -7,8 +7,8 @@ from matplotlib import pyplot as plt
 import re
 
 
-MatchOverViewDataPath =r"C:\Users\ASUS\OneDrive\Desktop\Python Projects\IPL data analysis\Updated_Matches.csv"
-BallAnalysisDataPath = r"C:\Users\ASUS\OneDrive\Desktop\Python Projects\IPL data analysis\Updated_Ipl_Ball_By_Ball3.csv"
+MatchOverViewDataPath =r"Updated_Matches.csv"
+BallAnalysisDataPath = r"Updated_Ipl_Ball_By_Ball3.csv"
 TeamData = pd.read_csv(r"TeamData.csv")
 
 def dataLoaderandPreprocessor(MatchPath = MatchOverViewDataPath , BallPath = BallAnalysisDataPath):
