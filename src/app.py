@@ -668,7 +668,7 @@ if user_menu == "Batsman Vs Batsman":
             )
             
             if (batter1 != "Select Batter") & (batter2 != "Select Batter"):
-                Overview , BallsFaced , Batting_Averages = st.tabs(["Overview" ,"How Faced ?","Batting Averages"])
+                Overview , BallsFaced = st.tabs(["Overview" ,"How Faced ?"])
                 runtab1 , fig1 = GetPerBatsmanOverview(batter1,season=season , venue = Venue , bowler = "Overall")
                 runtab2 , fig2 = GetPerBatsmanOverview(batter2,season=season , venue = Venue , bowler = "Overall")
                 with Overview:

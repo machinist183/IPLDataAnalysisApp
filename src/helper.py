@@ -370,25 +370,25 @@ def GetNumofTeams(season):
 
 def OverallBattingRecSeason(season):
     SeasonDf= GetSeasonWiseDetailData(season)
-    RunDeliveriesDf =SeasonDf.groupby("batter").sum()[["batsman_run","islegal"]].sort_values(by=["batsman_run"],ascending=False).reset_index()
+    RunDeliveriesDf =SeasonDf.groupby("batter").sum(numeric_only = True)[["batsman_run","islegal"]].sort_values(by=["batsman_run"],ascending=False).reset_index()
     FoursSixesDf =SeasonDf.groupby("batter")["batsman_run"].value_counts().to_frame().unstack()["batsman_run"]
     OverallBattingRecSeason = RunDeliveriesDf.merge(FoursSixesDf , how = "left" ,on="batter")
     OverallBattingRecSeason["SR"] = OverallBattingRecSeason["batsman_run"] /OverallBattingRecSeason["islegal"] * 100
 
     #Getting Fifties and Centuries per Player
 
-    InningWiseRuns= SeasonDf.groupby(["ID","innings","batter"]).sum()["batsman_run"]
+    InningWiseRuns= SeasonDf.groupby(["ID","innings","batter"]).sum(numeric_only = True)["batsman_run"]
 
     HighestScores = InningWiseRuns.droplevel(["ID","innings"]).reset_index()\
                 .sort_values(by=["batter","batsman_run"],ascending =[False ,False]).drop_duplicates(subset = ["batter"])
     HighestScores.rename(columns ={"batsman_run":"HS"} ,inplace = True)
 
     isFifty = ((InningWiseRuns>= 50) & (InningWiseRuns < 100))
-    isFiftydf = isFifty.droplevel(["ID","innings"]).groupby("batter").sum().reset_index()
+    isFiftydf = isFifty.droplevel(["ID","innings"]).groupby("batter").sum(numeric_only = True).reset_index()
     isFiftydf.rename(columns = {"batsman_run":"Fifties"} , inplace = True)
 
     isHundred = (InningWiseRuns>= 100)
-    isHundreddf = isHundred.droplevel(["ID","innings"]).groupby("batter").sum().reset_index()
+    isHundreddf = isHundred.droplevel(["ID","innings"]).groupby("batter").sum(numeric_only  = True).reset_index()
     isHundreddf.rename(columns = {"batsman_run":"Centuries"} , inplace = True)
 
     OverallBattingRecSeason = OverallBattingRecSeason.merge(isFiftydf , how = "left" ,on = 'batter')\
