@@ -24,7 +24,6 @@ This project is made for analysing the last 12 season of IPL ball by ball datase
 
 ## Dataset Description
 
-[alt text](https://github.com/machinist183/IPLDataAnalysisApp/blob/main/Collage.jpg?raw=True)
 This project contains three datasets.
 
 1. BallByBall dataset (https://github.com/machinist183/IPLDataAnalysisApp/blob/main/src/datasets/Updated_Ipl_Ball_By_Ball3.csv).
