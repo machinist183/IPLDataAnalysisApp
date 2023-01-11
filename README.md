@@ -1,7 +1,8 @@
 
 # IPL Data Analysis App
-[main GitHub repo](https://github.com/machinist183/IPLDataAnalysisApp).
+   [main GitHub repo](https://github.com/machinist183/IPLDataAnalysisApp).
 
+   [Application Link](http://172.105.41.201:8501/)
 #### -- Project Status: [Active]
           
 ## Project Intro/Objective
