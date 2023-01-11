@@ -20,14 +20,14 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )                                   
 
-MatchOverViewDataPath =r"datasets\Updated_Matches.csv"
-BallAnalysisDataPath = r"datsets\Updated_Ipl_Ball_By_Ball3.csv"
+MatchOverViewDataPath =r"src\datasets\Updated_Matches.csv"
+BallAnalysisDataPath = r"src\datasets\Updated_Ipl_Ball_By_Ball3.csv"
 
 #Creates the two dataframses from the csv files 
 
 MatchOverviewdF , BallAnalysisdf = dataLoaderandPreprocessor()
 
-st.sidebar.image(r"TeamLogo\iplognew.png")
+st.sidebar.image(r"src\TeamLogo\iplognew.png")
 st.sidebar.title("IPL Data Analysis")
 
 
@@ -49,7 +49,7 @@ This site presents the data of last 12 IPL seasons in visual informatics.
 This is a beta site . More tools to be added soon.
 Thank you 
     """
-    st.image(r"TeamLogo\newlog.jpg")
+    st.image(r"src\TeamLogo\newlog.jpg")
     st.code(text , language = None)
 
 if user_menu == 'MatchWiseAnalysis':
@@ -668,7 +668,7 @@ if user_menu == "Batsman Vs Batsman":
             )
             
             if (batter1 != "Select Batter") & (batter2 != "Select Batter"):
-                Overview , BallsFaced = st.tabs(["Overview" ,"How Faced ?"])
+                Overview , BallsFaced  = st.tabs(["Overview" ,"How Faced ?"])
                 runtab1 , fig1 = GetPerBatsmanOverview(batter1,season=season , venue = Venue , bowler = "Overall")
                 runtab2 , fig2 = GetPerBatsmanOverview(batter2,season=season , venue = Venue , bowler = "Overall")
                 with Overview:

@@ -7,9 +7,9 @@ from matplotlib import pyplot as plt
 import re
 
 
-MatchOverViewDataPath =r"datasets\Updated_Matches.csv"
-BallAnalysisDataPath = r"datasets\Updated_Ipl_Ball_By_Ball3.csv"
-TeamData = pd.read_csv(r"datasets\TeamData.csv")
+MatchOverViewDataPath =r"src\datasets\Updated_Matches.csv"
+BallAnalysisDataPath = r"src\datasets\Updated_Ipl_Ball_By_Ball3.csv"
+TeamData = pd.read_csv(r"src\datasets\TeamData.csv")
 
 
 
@@ -39,7 +39,7 @@ MatchOverviewdF , BallAnalysisdf = dataLoaderandPreprocessor()
 
 def GetTeamJeseyColor(Name):
     #Gets team colour from TeamData
-    Team_Data = pd.read_csv(r"datasets\TeamData.csv")
+    Team_Data = pd.read_csv(r"src\datasets\TeamData.csv")
     color = Team_Data[Team_Data["Name"] == Name][["Logo","Color"]].values[0][1]
     return color
 
