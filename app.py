@@ -14,31 +14,43 @@ from helper import GetChaseGraph , GetInningDataFrame,GetMatchDataFrame,\
                                             BattervsBowlerDetail ,GetVenueListBySeason ,BatterListbySeasonandVenue
                                             
 
-dcount = 0
+dcount = 0  # generate initialiser for seperate keys in tabs
 st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )                                   
 
-MatchOverViewDataPath =r"Updated_Matches.csv"
-BallAnalysisDataPath = r"Updated_Ipl_Ball_By_Ball3.csv"
+MatchOverViewDataPath =r"datasets\Updated_Matches.csv"
+BallAnalysisDataPath = r"datsets\Updated_Ipl_Ball_By_Ball3.csv"
 
-#Creates the two datasets from the csv files 
+#Creates the two dataframses from the csv files 
 
 MatchOverviewdF , BallAnalysisdf = dataLoaderandPreprocessor()
 
-st.sidebar.image(r"Ipl Team Lgos\DCroundbig.png")
+st.sidebar.image(r"TeamLogo\iplognew.png")
 st.sidebar.title("IPL Data Analysis")
+
+
+#Creates a selection list for level of analysis
 
 user_menu = st.sidebar.radio(
     'Select an Option',
-    ('MatchWiseAnalysis','SeasonWiseAnalysis',"PlayerWiseAnalysis","Batsman Vs Batsman")
+    ('Overview','MatchWiseAnalysis','SeasonWiseAnalysis',"PlayerWiseAnalysis","Batsman Vs Batsman")
 )
 
 
 
+if user_menu == "Overview":
+    text = """
+                                                Welcome to IPL Analysis Site.
 
-    
+IPL is the most famous cricket T20 tournament hosted by BBCI.
+This site presents the data of last 12 IPL seasons in visual informatics.
+This is a beta site . More tools to be added soon.
+Thank you 
+    """
+    st.image(r"TeamLogo\newlog.jpg")
+    st.code(text , language = None)
 
 if user_menu == 'MatchWiseAnalysis':
     season = st.sidebar.selectbox(
@@ -291,36 +303,46 @@ if user_menu == "PlayerWiseAnalysis":
                                                     ,use_container_width=True, theme = None)
 
                             with Struggles_Against:
-                                Struggledf1 , Bowler_List1 =  GetStrugglerBowlers(batter)
+                                min_balls = 25 
+                                Struggledf1 , Bowler_List1 =  GetStrugglerBowlers(batter , min_balls=min_balls)
                                 with st.container():
-                                    st.table(Struggledf1)
-                                with st.expander("See Further Bowler Details "):
-                                    bowler1 = st.selectbox("Select Bowler",
-                                                        Bowler_List1 ,key=dcount
-                                                            )
-                                    dcount+=1
-                                    if bowler1 != "Select Bowler":
-                                        Details , perc_pie =  BattervsBowlerDetail(batter , bowler1 , season=season , venue = Venue)
-                                        with st.container():
-                                            st.table(Details)
-                                        with st.container():
-                                            st.plotly_chart(perc_pie , use_container_width=True , theme = None)
+                                    if Struggledf1.shape[0] == 0:
+                                        st.code("The Batsman must have faced at least {} balls in perticular category . Try reducing the filters".format(min_balls) , language = None)
+                                    else:
+                                        st.code("This list shows the bolwer who has bowl at least {} balls to batsman .".format(min_balls) , language = None)
+                                        st.table(Struggledf1)
+                                        with st.expander("See Further Bowler Details "):
+                                            bowler1 = st.selectbox("Select Bowler",
+                                                                Bowler_List1 ,key=dcount
+                                                                    )
+                                            dcount+=1
+                                            if bowler1 != "Select Bowler":
+                                                Details , perc_pie =  BattervsBowlerDetail(batter , bowler1 , season=season , venue = Venue)
+                                                with st.container():
+                                                    st.table(Details)
+                                                with st.container():
+                                                    st.plotly_chart(perc_pie , use_container_width=True , theme = None)
 
                             with Score_Against:
-                                Scoredf1, Bowler_List2 =  GetComfortBowlers(batter = batter ,season=season,venue = Venue,bowler = bowler)
+                                min_balls = 25
+                                Scoredf1, Bowler_List2 =  GetComfortBowlers(batter = batter ,season=season,venue = Venue,bowler = bowler , min_balls=min_balls)
                                 with st.container():
-                                    st.table(Scoredf1)
-                                with st.expander("See Further Bowler Details "):
-                                    bowler2 = st.selectbox("Select Bowler",
-                                                        Bowler_List2 ,key = dcount
-                                                        )
-                                    dcount+=1
-                                    if bowler2 !="Select Bowler":
-                                        Details , perc_pie =  BattervsBowlerDetail(batter , bowler2 , season=season , venue = Venue)
-                                        with st.container():
-                                            st.table(Details)
-                                        with st.container():
-                                            st.plotly_chart(perc_pie , use_container_width=True , theme = None)
+                                    if Scoredf1.shape[0] == 0:
+                                        st.code("The Batsman must have faced at least {} balls in perticular category . Try reducing the filters".format(min_balls) , language = None)
+                                    else:
+                                        st.code("This list shows the bolwers who has bowl at least {} balls to batsman .".format(min_balls) , language = None)
+                                        st.table(Scoredf1)
+                                        with st.expander("See Further Bowler Details "):
+                                            bowler2 = st.selectbox("Select Bowler",
+                                                                Bowler_List2 ,key = dcount
+                                                                )
+                                            dcount+=1
+                                            if bowler2 !="Select Bowler":
+                                                Details , perc_pie =  BattervsBowlerDetail(batter , bowler2 , season=season , venue = Venue )
+                                                with st.container():
+                                                    st.table(Details)
+                                                with st.container():
+                                                    st.plotly_chart(perc_pie , use_container_width=True , theme = None)
                             
                             with Falls_Against:
 
@@ -369,36 +391,47 @@ if user_menu == "PlayerWiseAnalysis":
                                         st.plotly_chart(fig,use_container_width=True, theme = None)
                             
                             with Struggles_Against:
+                                min_balls = 15
                                 Struggledf2 , Bowler_List4 =  GetStrugglerBowlers(batter = batter ,season = season ,venue = Venue,bowler = bowler ,min_balls=15)
                                 with st.container():
-                                    st.table(Struggledf2)
-                                with st.expander("See Further Bowler Details "):
-                                    bowler4 = st.selectbox("Select Bowler",
-                                                        Bowler_List4 ,key=dcount
-                                                            )
-                                    dcount+=1
-                                    if bowler4 != "Select Bowler":
-                                        Details , perc_pie =  BattervsBowlerDetail(batter , bowler4 , season=season , venue = Venue)
-                                        with st.container():
-                                            st.table(Details)
-                                        with st.container():
-                                            st.plotly_chart(perc_pie , use_container_width=True , theme = None)
+                                    if Struggledf2.shape[0] == 0:
+                                        st.code("The Batsman must have faced at least {} balls in perticular category . Try reducing the filters".format(min_balls) , language = None)
+                                    
+                                    else:
+                                        st.code("This list shows the bolwer who has bowl at least {} balls to batsman .".format(min_balls) , language = None)
+                                        st.table(Struggledf2)
+                                        with st.expander("See Further Bowler Details "):
+                                            bowler4 = st.selectbox("Select Bowler",
+                                                                Bowler_List4 ,key=dcount
+                                                                    )
+                                            dcount+=1
+                                            if bowler4 != "Select Bowler":
+                                                Details , perc_pie =  BattervsBowlerDetail(batter , bowler4 , season=season , venue = Venue)
+                                                with st.container():
+                                                    st.table(Details)
+                                                with st.container():
+                                                    st.plotly_chart(perc_pie , use_container_width=True , theme = None)
 
                             with Score_Against:
+                                min_balls = 15
                                 Scoredf2, Bowler_List5 =  GetComfortBowlers(batter = batter ,season = season ,venue = Venue,bowler = bowler ,min_balls=15)
                                 with st.container():
-                                    st.table(Scoredf2)
-                                with st.expander("See Further Bowler Details "):
-                                    bowler5 = st.selectbox("Select Bowler",
-                                                        Bowler_List5 ,key = dcount
-                                                            )
-                                    dcount+=1
-                                    if bowler5 != "Select Bowler":
-                                        Details , perc_pie =  BattervsBowlerDetail(batter , bowler5 , season=season , venue = Venue)
-                                        with st.container():
-                                            st.table(Details)
-                                        with st.container():
-                                            st.plotly_chart(perc_pie , use_container_width=True , theme = None)
+                                    if Scoredf2.shape[0] == 0:
+                                        st.code("The Batsman must have faced at least {} balls in perticular category . Try reducing the filters".format(min_balls) , language = None)
+                                    else:
+                                        st.code("This list shows the bolwer who has bowl at least {} balls to batsman .".format(min_balls) , language = None)
+                                        st.table(Scoredf2)
+                                        with st.expander("See Further Bowler Details "):
+                                            bowler5 = st.selectbox("Select Bowler",
+                                                                Bowler_List5 ,key = dcount
+                                                                    )
+                                            dcount+=1
+                                            if bowler5 != "Select Bowler":
+                                                Details , perc_pie =  BattervsBowlerDetail(batter , bowler5 , season=season , venue = Venue)
+                                                with st.container():
+                                                    st.table(Details)
+                                                with st.container():
+                                                    st.plotly_chart(perc_pie , use_container_width=True , theme = None)
                             
                             with Falls_Against:
 
@@ -456,38 +489,46 @@ if user_menu == "PlayerWiseAnalysis":
                                         st.plotly_chart(fig,use_container_width=True, theme = None)
 
                             with Struggles_Against4:
-                                print(batter , season , Venue , bowler)
-                                Struggledf3 , Bowler_List7 =  GetStrugglerBowlers(batter = batter ,season = season ,venue = Venue,bowler = bowler)
+                                min_balls = 15
+                                Struggledf3 , Bowler_List7 =  GetStrugglerBowlers(batter = batter ,season = season ,venue = Venue,bowler = bowler , min_balls=min_balls)
                                 with st.container():
-                                    st.table(Struggledf3)
-                                with st.expander("See Further Bowler Details "):
-                                    bowler7 = st.selectbox("Select Bowler",
-                                                        Bowler_List7 ,key=dcount
-                                                            )
-                                    dcount+=1
-                                    if bowler7 != "Select Bowler":
-                                        Details , perc_pie =  BattervsBowlerDetail(batter, bowler7 ,season = season ,venue = Venue)
-                                        with st.container():
-                                            st.table(Details)
-                                        with st.container():
-                                            st.plotly_chart(perc_pie , use_container_width=True , theme = None)
+                                    if Struggledf3.shape[0] == 0:
+                                        st.code("The Batsman must have faced at least {} balls in perticular category . Try reducing the filters".format(min_balls) , language = None)
+                                    else:
+                                        st.code("This list shows the bolwer who has bowl at least {} balls to batsman .".format(min_balls) , language = None)
+                                        st.table(Struggledf3)
+                                        with st.expander("See Further Bowler Details "):
+                                            bowler7 = st.selectbox("Select Bowler",
+                                                                Bowler_List7 ,key=dcount
+                                                                    )
+                                            dcount+=1
+                                            if bowler7 != "Select Bowler":
+                                                Details , perc_pie =  BattervsBowlerDetail(batter, bowler7 ,season = season ,venue = Venue)
+                                                with st.container():
+                                                    st.table(Details)
+                                                with st.container():
+                                                    st.plotly_chart(perc_pie , use_container_width=True , theme = None)
 
                             with Score_Against4:
-                                print(batter , season , Venue , bowler)
-                                Scoredf3, Bowler_List8 =  GetComfortBowlers(batter = batter ,season = season ,venue = Venue,bowler = bowler)
+                                min_balls = 15
+                                Scoredf3, Bowler_List8 =  GetComfortBowlers(batter = batter ,season = season ,venue = Venue,bowler = bowler , min_balls=15)
                                 with st.container():
-                                    st.table(Scoredf3)
-                                with st.expander("See Further Bowler Details "):
-                                    bowler8 = st.selectbox("Select Bowler",
-                                                        Bowler_List8 ,key = dcount
-                                                        )
-                                    dcount+=1
-                                    if bowler8 != "Select Bowler":
-                                        Details , perc_pie =  BattervsBowlerDetail(batter ,bowler8 ,season = season ,venue = Venue)
-                                        with st.container():
-                                            st.table(Details)
-                                        with st.container():
-                                            st.plotly_chart(perc_pie , use_container_width=True , theme = None)
+                                    if Scoredf3.shape[0] == 0:
+                                        st.code("The Batsman must have faced at least {} balls in perticular category . Try reducing the filters".format(min_balls) , language = None)
+                                    else:
+                                        st.code("This list shows the bolwer who has bowl at least {} balls to batsman .".format(min_balls) , language = None)
+                                        st.table(Scoredf3)
+                                        with st.expander("See Further Bowler Details "):
+                                            bowler8 = st.selectbox("Select Bowler",
+                                                                Bowler_List8 ,key = dcount
+                                                                )
+                                            dcount+=1
+                                            if bowler8 != "Select Bowler":
+                                                Details , perc_pie =  BattervsBowlerDetail(batter ,bowler8 ,season = season ,venue = Venue)
+                                                with st.container():
+                                                    st.table(Details)
+                                                with st.container():
+                                                    st.plotly_chart(perc_pie , use_container_width=True , theme = None)
                             
                             with Falls_Against4:
                                 print(batter , season , Venue , bowler)
@@ -537,36 +578,46 @@ if user_menu == "PlayerWiseAnalysis":
                                         st.plotly_chart(fig,use_container_width=True, theme = None)
                             
                             with Struggles_Against:
+                                min_balls = 15
                                 Struggledf4 , Bowler_List10 =  GetStrugglerBowlers(batter = batter ,season = season ,venue = Venue,bowler = bowler ,min_balls=15)
                                 with st.container():
-                                    st.table(Struggledf4)
-                                with st.expander("See Further Bowler Details "):
-                                    bowler10 = st.selectbox("Select Bowler",
-                                                        Bowler_List10 ,key=dcount
-                                                            )
-                                    dcount+=1
-                                    if bowler10 != "Select Bowler":
-                                        Details , perc_pie =  BattervsBowlerDetail(batter , bowler10 , season=season , venue = Venue)
-                                        with st.container():
-                                            st.table(Details)
-                                        with st.container():
-                                            st.plotly_chart(perc_pie , use_container_width=True , theme = None)
+                                    if Struggledf4.shape[0] == 0:
+                                        st.code("The Batsman must have faced at least {} balls in perticular category . Try reducing the filters".format(min_balls) , language = None)
+                                    else:
+                                        st.code("This list shows the bolwer who has bowl at least {} balls to batsman .".format(min_balls) , language = None)
+                                        st.table(Struggledf4)
+                                        with st.expander("See Further Bowler Details "):
+                                            bowler10 = st.selectbox("Select Bowler",
+                                                                Bowler_List10 ,key=dcount
+                                                                    )
+                                            dcount+=1
+                                            if bowler10 != "Select Bowler":
+                                                Details , perc_pie =  BattervsBowlerDetail(batter , bowler10 , season=season , venue = Venue)
+                                                with st.container():
+                                                    st.table(Details)
+                                                with st.container():
+                                                    st.plotly_chart(perc_pie , use_container_width=True , theme = None)
 
                             with Score_Against:
+                                min_balls = 15
                                 Scoredf4, Bowler_List11 =  GetComfortBowlers(batter = batter ,season = season ,venue = Venue,bowler = bowler ,min_balls=15)
                                 with st.container():
-                                    st.table(Scoredf4)
-                                with st.expander("See Further Bowler Details "):
-                                    bowler11 = st.selectbox("Select Bowler",
-                                                        Bowler_List11 ,key = dcount
-                                                            )
-                                    dcount+=1
-                                    if bowler11 != "Select Bowler":
-                                        Details , perc_pie =  BattervsBowlerDetail(batter , bowler11 , season=season , venue = Venue)
-                                        with st.container():
-                                            st.table(Details)
-                                        with st.container():
-                                            st.plotly_chart(perc_pie , use_container_width=True , theme = None)
+                                    if Scoredf4.shape[0] == 0:
+                                        st.code("The Batsman must have faced at least {} balls in perticular category . Try reducing the filters".format(min_balls) , language = None)
+                                    else:
+                                        st.code("This list shows the bolwer who has bowl at least {} ball to batsman .".format(min_balls) , language = None)
+                                        st.table(Scoredf4)
+                                        with st.expander("See Further Bowler Details "):
+                                            bowler11 = st.selectbox("Select Bowler",
+                                                                Bowler_List11 ,key = dcount
+                                                                    )
+                                            dcount+=1
+                                            if bowler11 != "Select Bowler":
+                                                Details , perc_pie =  BattervsBowlerDetail(batter , bowler11 , season=season , venue = Venue)
+                                                with st.container():
+                                                    st.table(Details)
+                                                with st.container():
+                                                    st.plotly_chart(perc_pie , use_container_width=True , theme = None)
                             
                             with Falls_Against:
 

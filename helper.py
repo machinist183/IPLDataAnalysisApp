@@ -7,11 +7,14 @@ from matplotlib import pyplot as plt
 import re
 
 
-MatchOverViewDataPath =r"Updated_Matches.csv"
-BallAnalysisDataPath = r"Updated_Ipl_Ball_By_Ball3.csv"
-TeamData = pd.read_csv(r"TeamData.csv")
+MatchOverViewDataPath =r"datasets\Updated_Matches.csv"
+BallAnalysisDataPath = r"datasets\Updated_Ipl_Ball_By_Ball3.csv"
+TeamData = pd.read_csv(r"datasets\TeamData.csv")
+
+
 
 def dataLoaderandPreprocessor(MatchPath = MatchOverViewDataPath , BallPath = BallAnalysisDataPath):
+    #Func for loading and preprocessing the dataset
     MatchOverviewdF= pd.read_csv(MatchPath)
     BallAnalysisdf = pd.read_csv(BallPath)
     bbd_change_dt = BallAnalysisdf.drop(columns=["ID"])
@@ -35,16 +38,19 @@ def dataLoaderandPreprocessor(MatchPath = MatchOverViewDataPath , BallPath = Bal
 MatchOverviewdF , BallAnalysisdf = dataLoaderandPreprocessor()
 
 def GetTeamJeseyColor(Name):
-    Team_Data = pd.read_csv(r"TeamData.csv")
+    #Gets team colour from TeamData
+    Team_Data = pd.read_csv(r"datasets\TeamData.csv")
     color = Team_Data[Team_Data["Name"] == Name][["Logo","Color"]].values[0][1]
     return color
 
 def GetTeamName(matchid , inning_no):
+    #Gets team name according to argumnets passed
     filt = (BallAnalysisdf["ID"] == matchid) & (BallAnalysisdf["innings"] == inning_no )
     Name = BallAnalysisdf[filt]["BattingTeam"].values[0]
     return Name
 
 def GetMatchDataFrame(matchid):
+    #Gets Matchwise dataframe
     Matchdf = BallAnalysisdf.groupby("ID").get_group(matchid)
     return Matchdf
 
