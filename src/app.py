@@ -27,7 +27,6 @@ BallAnalysisDataPath = r"src\datasets\Updated_Ipl_Ball_By_Ball3.csv"
 
 MatchOverviewdF , BallAnalysisdf = dataLoaderandPreprocessor()
 
-st.sidebar.image(r"src\TeamLogo\iplognew.png")
 st.sidebar.title("IPL Data Analysis")
 
 
